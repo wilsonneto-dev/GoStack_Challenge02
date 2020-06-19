@@ -21,7 +21,10 @@ function App() {
   }
 
   async function handleRemoveRepository(id) {
-    // TODO
+    const { status } = await api.delete(`/repositories/${id}`);
+    if (status === 204) {
+      setProjects(projects.filter((project) => project.id !== id));
+    }
   }
 
   async function fetchData() {
