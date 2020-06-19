@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+
+import api from "./services/api";
 
 import "./styles.css";
 
 function App() {
+  const [projects, setProjects] = useState();
+
   async function handleAddRepository() {
     // TODO
   }
@@ -11,19 +15,39 @@ function App() {
     // TODO
   }
 
+  async function fetchData() {
+    const { data } = await api.get("/repositories");
+    setProjects(data);
+  }
+
+  useEffect(async () => {
+    await fetchData();
+  }, []);
+
   return (
     <div>
       <ul data-testid="repository-list">
-        <li>
-          Repositório 1
+        {!projects && "Loading projects..."}
 
-          <button onClick={() => handleRemoveRepository(1)}>
-            Remover
-          </button>
-        </li>
+        {projects?.map((project) => (
+          <li>
+            {project.title}
+            <button onClick={() => handleRemoveRepository(project.id)}>
+              Remover
+            </button>
+          </li>
+        ))}
       </ul>
 
-      <button onClick={handleAddRepository}>Adicionar</button>
+      <section>
+        <h2>Adicionar novo projeto:</h2>
+        <section>
+          <input placeholder="title" />
+          <input placeholder="url" />
+          <input placeholder="techs" />
+        </section>
+        <button onClick={handleAddRepository}>Adicionar</button>
+      </section>
     </div>
   );
 }
